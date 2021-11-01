@@ -39,13 +39,4 @@ public class Body {
     public void setFormdata(List<Formdata> formdata) {
         this.formdata = formdata;
     }
-
-    @Override
-    public String toString() {
-        return "Body{" +
-                "mode='" + mode + '\'' +
-                ", raw='" + raw + '\'' +
-                ", formdata=" + formdata +
-                '}';
-    }
 }
