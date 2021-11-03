@@ -2,9 +2,6 @@ package cn.microvideo.postman.model;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
-import com.alibaba.excel.annotation.write.style.ContentStyle;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
 
 /**
  * excel导出文件列
@@ -16,9 +13,6 @@ public class ExcelColumn {
 
     @ExcelProperty("序号")
     @ColumnWidth(10)
-    @ContentStyle(
-            verticalAlignment = VerticalAlignment.CENTER
-            ,horizontalAlignment = HorizontalAlignment.CENTER)
     private int sortNumber;
     @ExcelProperty("接口名称")
     @ColumnWidth(40)
