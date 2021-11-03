@@ -124,8 +124,7 @@ public class MainServiceImpl implements MainService {
 
     private String parsePostParameters(Request request) {
         if (request.getBody() == null) {
-            parseGetParameters(request.getUrl().getQuery());
-            return "";
+            return parseGetParameters(request.getUrl().getQuery());
         }
         if (request.getBody().getRaw() == null) {
             List<Formdata> formdata1 = request.getBody().getFormdata();
