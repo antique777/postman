@@ -97,8 +97,8 @@ public class MainServiceImpl implements MainService {
             return "";
         }
         String body = response.get(0).getBody();
-        if (body.length() > 800) {
-            return body.substring(0, 700);
+        if (body.length() > 1500) {
+            return body.substring(0, 1400);
         }
         return body;
     }
@@ -132,13 +132,13 @@ public class MainServiceImpl implements MainService {
                 sb.append(formdata.getKey()).append("  :  ").append(formdata.getDescription())
                         .append("(").append(formdata.getType()).append(") \r\n");
             }
-            if (sb.length() > 800) {
-                return sb.toString().substring(0, 700);
+            if (sb.length() > 1500) {
+                return sb.toString().substring(0, 1400);
             }
             return sb.toString();
         } else {
-            if (request.getBody().getRaw().length() > 800) {
-                return request.getBody().getRaw().substring(0, 700);
+            if (request.getBody().getRaw().length() > 1500) {
+                return request.getBody().getRaw().substring(0, 1400);
             }
             return request.getBody().getRaw();
         }
@@ -158,8 +158,8 @@ public class MainServiceImpl implements MainService {
                     .append(StringUtils.isBlank(query1.getDescription()) ? "" : query1.getDescription())
                     .append("\r\n");
         }
-        if (ss.length() > 800) {
-            return ss.toString().substring(0, 700);
+        if (ss.length() > 1500) {
+            return ss.toString().substring(0, 1400);
         }
         return ss.toString();
     }
