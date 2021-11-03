@@ -24,7 +24,7 @@ public class ExcelColumn {
     @ColumnWidth(65)
     private String urlName;
     @ExcelProperty("描述")
-    @ColumnWidth(10)
+    @ColumnWidth(30)
     private String description;
     @ExcelProperty("接口参数")
     @ColumnWidth(70)

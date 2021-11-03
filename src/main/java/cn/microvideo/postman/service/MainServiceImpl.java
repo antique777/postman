@@ -80,6 +80,8 @@ public class MainServiceImpl implements MainService {
             } else {
                 ExcelColumn excelColumn = new ExcelColumn();
                 excelColumn.setSortNumber(++num);
+                excelColumn.setDescription(
+                        StringUtils.isBlank(item.getRequest().getDescription()) ? "" : item.getRequest().getDescription());
                 excelColumn.setInterfaceName(item.getName());
                 excelColumn.setParameters(parseParameters(item.getRequest()));
                 excelColumn.setTypeName(item.getRequest().getMethod());

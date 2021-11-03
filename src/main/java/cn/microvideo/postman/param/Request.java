@@ -14,6 +14,15 @@ public class Request {
     private List<Header> header;
     private Url url;
     private Body body;
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public List<Header> getHeader() {
         return header;
@@ -49,10 +58,12 @@ public class Request {
 
     @Override
     public String toString() {
-        return "request{" +
+        return "Request{" +
                 "method='" + method + '\'' +
                 ", header=" + header +
                 ", url=" + url +
+                ", body=" + body +
+                ", description='" + description + '\'' +
                 '}';
     }
 }
