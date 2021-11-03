@@ -7,12 +7,10 @@ import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
-import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
@@ -34,6 +32,11 @@ import java.util.List;
 public class MainServiceImpl implements MainService {
 
     private int num;
+    private static final String GET = "GET";
+    private static final String POST = "POST";
+
+    private static final int STRING_LANG_MAX = 1500;
+    private static final int STRING_NEED_MAX = 1400;
 
     @Override
     public Result exchangeToExcel(MultipartFile jsonFile) throws JsonProcessingException {
@@ -97,23 +100,25 @@ public class MainServiceImpl implements MainService {
             return "";
         }
         String body = response.get(0).getBody();
-        if (body.length() > 1500) {
-            return body.substring(0, 1400);
+        if (body.length() > STRING_LANG_MAX) {
+            return body.substring(0, STRING_NEED_MAX);
         }
         return body;
     }
 
     private String parseParameters(Request request) {
-        if (request.getMethod().equals("GET")) {
+        if (request.getMethod().equals(GET)) {
             try {
                 return parseGetParameters(request.getUrl().getQuery());
             } catch (NullPointerException e) {
-                System.err.println("parseParameters ：" + request.toString());
+                System.err.println("parseParameters ：" + request);
                 e.printStackTrace();
                 return "";
             }
-        } else {
+        } else if (request.getMethod().equals(POST)){
             return parsePostParameters(request);
+        }else {
+            throw new IllegalArgumentException("暂时只支持get和post请求");
         }
     }
 
@@ -127,18 +132,18 @@ public class MainServiceImpl implements MainService {
             if (CollectionUtils.isEmpty(formdata1)) {
                 return "";
             }
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             for (Formdata formdata : formdata1) {
                 sb.append(formdata.getKey()).append("  :  ").append(formdata.getDescription())
                         .append("(").append(formdata.getType()).append(") \r\n");
             }
-            if (sb.length() > 1500) {
-                return sb.toString().substring(0, 1400);
+            if (sb.length() > STRING_LANG_MAX) {
+                return sb.substring(0, STRING_NEED_MAX);
             }
             return sb.toString();
         } else {
-            if (request.getBody().getRaw().length() > 1500) {
-                return request.getBody().getRaw().substring(0, 1400);
+            if (request.getBody().getRaw().length() > STRING_LANG_MAX) {
+                return request.getBody().getRaw().substring(0, STRING_NEED_MAX);
             }
             return request.getBody().getRaw();
         }
@@ -148,20 +153,20 @@ public class MainServiceImpl implements MainService {
         if (CollectionUtils.isEmpty(query)) {
             return "";
         }
-        StringBuffer ss = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (Query query1 : query) {
             if (query1.getDisabled() != null && query1.getDisabled()) {
                 continue;
             }
-            ss.append(query1.getKey()).append("   :   ")
+            sb.append(query1.getKey()).append("   :   ")
                     //.append(StringUtils.isBlank(query1.getValue()) ? "" : query1.getValue()).append(" ")
                     .append(StringUtils.isBlank(query1.getDescription()) ? "" : query1.getDescription())
                     .append("\r\n");
         }
-        if (ss.length() > 1500) {
-            return ss.toString().substring(0, 1400);
+        if (sb.length() > STRING_LANG_MAX) {
+            return sb.substring(0, STRING_NEED_MAX);
         }
-        return ss.toString();
+        return sb.toString();
     }
 
     private String parseUrlName(Request request) {
@@ -184,7 +189,7 @@ public class MainServiceImpl implements MainService {
         try (InputStream inputStream = jsonFile.getInputStream()) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
             int ch = 0;
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             while ((ch = reader.read()) != -1) {
                 sb.append((char) ch);
             }
