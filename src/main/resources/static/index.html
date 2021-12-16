@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎！</title>
+    <!--<script src="/js/vue.js"></script>
+    <script src="/js/index.js"></script>-->
+    <!--<script src="/js/axios.min.js"></script>-->
+    <!-- <link rel="stylesheet" type="text/css" href="/css/index.css">-->
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+
+</head>
+<body>
+
+<!--action="http://localhost:8088/controller/exchangeToExcel"-->
+
+<div id="app" style="align-items: center;margin: -100px 0 0 -150px;position: absolute;top: 50%;left: 50%">
+    <el-upload
+            class="upload-demo"
+            drag
+            :action="actionURL"
+            name="jsonFile"
+            :on-success="downloadFile"
+            show-file-list=false
+            :limit="1"
+            multiple>
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div class="el-upload__tip" slot="tip">只能上传post json文件，且不超过20MB</div>
+    </el-upload>
+</div>
+</body>
+<script>
+    var app = new Vue({
+        el: "#app",
+        data: {
+            actionURL:"http://localhost:8088/controller/getExcel"
+        },
+        computed: {},
+        methods: {
+            requestChange(params){
+
+            },
+            downloadFile(res, file) {
+                console.log(324,res)
+                let blob = new Blob([res], {type: "application/vnd.ms-excel"}); // 设置文件类型excel
+                let url = window.URL.createObjectURL(blob); // 创建一个临时的url指向blob对象
+                // 创建url之后可以模拟对此文件对象的一系列操作，例如：预览、下载
+                let a = document.createElement("a");
+                a.href = url;
+                a.download = file.name + ".xlsx";
+                a.click();
+                // 释放这个临时的对象url
+                window.URL.revokeObjectURL(url);
+
+            }
+        }
+    });
+</script>
+</html>
