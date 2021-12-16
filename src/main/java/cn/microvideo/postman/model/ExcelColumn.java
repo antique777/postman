@@ -2,6 +2,8 @@ package cn.microvideo.postman.model;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
+import lombok.Data;
+import lombok.ToString;
 
 /**
  * excel导出文件列
@@ -9,11 +11,15 @@ import com.alibaba.excel.annotation.write.style.ColumnWidth;
  * @author xab
  * @date 2021-10-31 17:25
  */
+@Data
+@ToString
 public class ExcelColumn {
-
     @ExcelProperty("序号")
     @ColumnWidth(10)
     private int sortNumber;
+    @ExcelProperty("文件夹名称")
+    @ColumnWidth(25)
+    private String folderName;
     @ExcelProperty("接口名称")
     @ColumnWidth(40)
     private String interfaceName;
@@ -35,82 +41,4 @@ public class ExcelColumn {
     @ExcelProperty("备注")
     @ColumnWidth(10)
     private String remark;
-
-    public int getSortNumber() {
-        return sortNumber;
-    }
-
-    public void setSortNumber(int sortNumber) {
-        this.sortNumber = sortNumber;
-    }
-
-    public String getInterfaceName() {
-        return interfaceName;
-    }
-
-    public void setInterfaceName(String interfaceName) {
-        this.interfaceName = interfaceName;
-    }
-
-    public String getUrlName() {
-        return urlName;
-    }
-
-    public void setUrlName(String urlName) {
-        this.urlName = urlName;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getParameters() {
-        return parameters;
-    }
-
-    public void setParameters(String parameters) {
-        this.parameters = parameters;
-    }
-
-    public String getTypeName() {
-        return typeName;
-    }
-
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
-    }
-
-    public String getResponseParameters() {
-        return responseParameters;
-    }
-
-    public void setResponseParameters(String responseParameters) {
-        this.responseParameters = responseParameters;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-    @Override
-    public String toString() {
-        return "ExcelColumn{" +
-                "sortNumber=" + sortNumber +
-                ", interfaceName='" + interfaceName + '\'' +
-                ", urlName='" + urlName + '\'' +
-                ", description='" + description + '\'' +
-                ", parameters='" + parameters + '\'' +
-                ", typeName='" + typeName + '\'' +
-                ", responseParameters='" + responseParameters + '\'' +
-                ", remark='" + remark + '\'' +
-                '}';
-    }
 }

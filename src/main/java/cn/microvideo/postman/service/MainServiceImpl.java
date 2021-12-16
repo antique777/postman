@@ -17,6 +17,7 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -43,12 +44,44 @@ public class MainServiceImpl implements MainService {
         num = 0;
         PostmanJson postmanJson = new ObjectMapper().readValue(readJsonFile(jsonFile), PostmanJson.class);
         List<ExcelColumn> excelColumnList = new ArrayList<>(128);
+        excelColumnList.add(new ExcelColumn(){{
+            this.setFolderName(postmanJson.getInfo().getName());
+        }});
         writeExcel(excelColumnList, postmanJson.getItem());
         EasyExcelFactory.write(postmanJson.getInfo().getName() + ".xlsx", ExcelColumn.class)
                 //.registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
                 .registerWriteHandler(getTableHeadStyle())
                 .sheet(postmanJson.getInfo().getName()).doWrite(excelColumnList);
         return new Result(excelColumnList);
+    }
+
+    @Override
+    public void getExcel(MultipartFile jsonFile, HttpServletResponse response) throws IOException {
+        num = 0;
+        PostmanJson postmanJson = new ObjectMapper().readValue(readJsonFile(jsonFile), PostmanJson.class);
+        List<ExcelColumn> excelColumnList = new ArrayList<>(128);
+        writeExcel(excelColumnList, postmanJson.getItem());
+
+        response.reset();
+        response.setCharacterEncoding("UTF-8");
+        //响应内容格式
+        response.setContentType("application/vnd.ms-excel");
+        //设置文件名
+        String fileName =jsonFile.getName() + ".xlsx";
+
+        try {
+            //设置前端下载文件名
+            response.setHeader("Content-disposition", "attachment;filename=" +new String(fileName.getBytes("UTF-8"), "GBK"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        //向前端写入文件流流
+        EasyExcelFactory.write(response.getOutputStream(), ExcelColumn.class)
+                .autoCloseStream(true)
+                .registerWriteHandler(getTableHeadStyle())
+                .sheet(postmanJson.getInfo().getName()).doWrite(excelColumnList);
+
     }
 
     private HorizontalCellStyleStrategy getTableHeadStyle() {
@@ -79,6 +112,9 @@ public class MainServiceImpl implements MainService {
         }
         for (Item item : items) {
             if (item.getRequest() == null) {
+                excelColumnList.add(new ExcelColumn(){{
+                    this.setFolderName(item.getName());
+                }});
                 writeExcel(excelColumnList, item.getItem());
             } else {
                 ExcelColumn excelColumn = new ExcelColumn();
@@ -115,9 +151,9 @@ public class MainServiceImpl implements MainService {
                 e.printStackTrace();
                 return "";
             }
-        } else if (request.getMethod().equals(POST)){
+        } else if (request.getMethod().equals(POST)) {
             return parsePostParameters(request);
-        }else {
+        } else {
             throw new IllegalArgumentException("暂时只支持get和post请求");
         }
     }
